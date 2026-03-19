@@ -1,0 +1,38 @@
+services:
+  stt-server:
+    build:
+      context: ./stt-server
+    container_name: audio-brief-stt
+    ports:
+      - "8000:8000"
+    networks:
+      - audio-brief-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: audio-brief-backend
+    ports:
+      - "8080:8080"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      STT_SERVER_URL: http://stt-server:8000
+    depends_on:
+      - stt-server
+    networks:
+      - audio-brief-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: audio-brief-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - audio-brief-net
+
+networks:
+  audio-brief-net:
+    driver: bridge

@@ -1,32 +1,93 @@
+#################################
 # OS
+#################################
 .DS_Store
 Thumbs.db
 
-# IDE
+#################################
+# IDE / Editor
+#################################
 .idea/
 .vscode/
+*.iml
 
-# Node
+#################################
+# Logs
+#################################
+*.log
+logs/
+
+#################################
+# Environment variables
+#################################
+.env
+.env.*
+*.env
+
+#################################
+# Node / Frontend (React, Vite)
+#################################
 node_modules/
 dist/
-.env
+build/
+*.local
 
-# Python
+#################################
+# Python / STT Server
+#################################
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
 venv/
-.env
+.venv/
+env/
+pip-wheel-metadata/
 
-# Java
+#################################
+# Java / Spring Boot
+#################################
 target/
-*.log
+*.jar
+*.war
+*.ear
+.gradle/
+build/
 
-# local secret files
-frontend/.env
-stt-server/.env
+#################################
+# Spring Config (local secrets)
+#################################
 backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-*.yml
+backend/src/main/resources/application-*.yaml
 
-# archives
+#################################
+# Upload / Temp files
+#################################
+uploads/
+temp/
+tmp/
+
+#################################
+# Archives / Packages
+#################################
 *.zip
 *.tar
 *.gz
+*.rar
+*.7z
+
+#################################
+# Docker
+#################################
+.dockerignore
+docker-compose.override.yml
+
+#################################
+# Misc
+#################################
+*.swp
+*.swo
+*.bak
+*.tmp

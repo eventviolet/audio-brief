@@ -1,5 +1,6 @@
 package com.vivace.backend;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -17,6 +18,9 @@ public class JobService {
 
     private final JobStore jobStore;
     private final SummaryService summaryService;
+
+    @Value("${stt.server.url}")
+    private String sttServerUrl;
 
     public JobService(JobStore jobStore, SummaryService summaryService) {
         this.jobStore = jobStore;
@@ -51,8 +55,7 @@ public class JobService {
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", fileResource);
-            body.add("jobId", jobId);   // ⭐ 핵심 추가
-
+            body.add("jobId", jobId);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -60,8 +63,10 @@ public class JobService {
             HttpEntity<MultiValueMap<String, Object>> requestEntity =
                     new HttpEntity<>(body, headers);
 
+            String url = sttServerUrl + "/transcribe";
+
             ResponseEntity<Map> response = restTemplate.exchange(
-                    "http://localhost:8000/transcribe",
+                    url,
                     HttpMethod.POST,
                     requestEntity,
                     Map.class
