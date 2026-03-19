@@ -1,162 +1,159 @@
 제작자 이메일 : canon9035@gmail.com
 
-프로그램 설명 : 음성 파일을 업로드하면 STT(Speech-to-Text) 처리 후 요약 결과를 제공하는 프로젝트입니다.
+
+음성 파일을 업로드하면  
+STT(Speech-to-Text) → 텍스트 변환 → 요약까지 자동으로 처리하는 서비스입니다.
 
 
-
-\## 프로젝트 구성
-
-
-
-\- \*\*frontend\*\*: 사용자 업로드 및 진행 상태 확인용 UI
-
-\- \*\*backend\*\*: 업로드, 작업 요청, 진행률 조회, 요약 API 제공
-
-\- \*\*stt-server\*\*: 음성 파일 전사 처리 담당 Python 서버
+## 🧩 아키텍처
+[Frontend (React)]
+↓
+[Backend (Spring Boot)]
+↓
+[STT Server (FastAPI + Whisper)]
 
 
+### 통신 흐름
 
-\## 디렉터리 구조
+1. 사용자가 음성 파일 업로드
+2. Backend가 작업(Job) 생성
+3. STT Server에 전사 요청
+4. STT Server가 chunk 단위로 음성 처리
+5. 진행률을 Backend로 callback
+6. Backend가 상태 저장
+7. Frontend가 polling으로 진행률 조회
+8. 완료 후 요약 결과 반환
+
+---
+
+## 🚀 주요 기능
+
+- 🎤 음성 파일 업로드
+- ✂️ 오디오 chunk 분할 처리 (대용량 대응)
+- 🧠 Whisper 기반 음성 전사
+- 📊 실시간 진행률 표시
+- 📝 전사 결과 요약
+- 🔄 비동기 작업 처리
+
+---
+
+## ⚙️ 기술 스택
+
+### Backend
+- Java 17
+- Spring Boot
+- Async 처리 (@Async)
+- In-memory Job Store
+
+### Frontend
+- React
+- Vite
+- Polling 기반 진행률 UI
+
+### STT Server
+- Python
+- FastAPI
+- OpenAI Whisper
+- ffmpeg (audio processing)
+
+### Infra
+- Docker
+- Docker Compose
+
+---
+
+## 🐳 실행 방법 (Docker)
+
+1. 환경 변수 설정
+
+루트 `.env` 파일 생성
+
+```env
+OPENAI_API_KEY=your_api_key
+
+2. 실행
+docker compose up --build
+
+3. 접속
+Frontend: http://localhost:5173
+
+Backend: http://localhost:8080
+
+STT Server: http://localhost:8000
 
 
+진행률 처리 방식
+진행률은 단순 시간 기반이 아니라 실제 작업 기준으로 계산
+0%   : 요청 생성
+10%  : 업로드 완료
+20%  : STT 시작
+20~80% : chunk 전사 진행
+90%  : 요약 생성
+100% : 완료
 
-```text
+핵심 구현
+STT 서버 → Backend로 progress callback
+Backend → 상태 저장
+Frontend → polling
 
+문제 해결 경험 (핵심 포인트)
+1. Docker 환경에서 진행률 미반영 문제
+문제
+로컬에서는 정상
+Docker에서는 10% → 100%로 점프
+
+원인
+localhost 사용으로 인해 컨테이너 간 통신 실패
+# ❌ 잘못된 코드
+SPRING_BASE_URL = "http://localhost:8080"
+해결
+Docker 내부 네트워크에서는 서비스명 사용
+# ✅ 수정
+SPRING_BASE_URL = "http://backend:8080"
+
+
+2. Docker 빌드 성능 문제
+문제
+Gradle build를 Docker 내부에서 수행 → 매우 느림
+
+해결
+로컬에서 jar 빌드
+Docker에서는 COPY만 수행
+
+dockerfile
+COPY build/libs/*.jar app.jar
+
+
+3. ffmpeg 누락 문제
+문제
+ffprobe not found 에러 발생
+
+해결
+Dockerfile에 ffmpeg 설치 추가
+
+dockerfile
+RUN apt-get update && apt-get install -y ffmpeg
+
+프로젝트 구조
 audio-brief/
-
 ├─ backend/
-
 ├─ frontend/
-
-└─ stt-server/
-
-
-
-기술 스택
-
-Frontend
-
-\-React
-
-\-Vite
-
-\-JavaScript
-
-\-CSS
-
-Backend
-
-\-Java
-
-\-Spring Boot
-
-\-REST API
-
-STT Server
-
-\-Python
-
-\-FastAPI 또는 Python API 서버 구조
-
-\-음성 전사 처리 로직
-
-
-
-주요 기능
-
-\-음성 파일 업로드
-
-\-STT 서버로 전사 요청
-
-\-작업 진행률 조회
-
-\-전사 결과 기반 요약
-
-\-프론트엔드에서 상태 확인
-
-
-
-서비스 흐름
-
-1.사용자가 프론트엔드에서 음성 파일 업로드
-
-2.백엔드가 업로드 파일을 수신하고 작업 생성
-
-3.백엔드가 STT 서버에 전사 요청
-
-4.STT 서버가 음성을 텍스트로 변환
-
-5.백엔드가 전사 결과를 바탕으로 요약 생성
-
-6.프론트엔드가 진행률 및 결과 표시
-
-
-
-실행 방법
-
-1\. STT 서버 실행
-
-cd stt-server
-
-python main.py
-
-2\. 백엔드 실행
-
-cd backend
-
-./gradlew bootRun
-
-Windows에서는:
-
-gradlew.bat bootRun
-
-3\. 프론트엔드 실행
-
-cd frontend
-
-npm install
-
-npm run dev
-
-
-
-환경 변수
-
-백엔드에서는 OpenAI API Key를 환경 변수로 주입받도록 설정되어 있습니다.
-
-openai.api.key=${OPENAI\_API\_KEY:}
-
-
-
-예시:
-
-Windows CMD
-
-set OPENAI\_API\_KEY=your\_api\_key
-
-PowerShell
-
-$env:OPENAI\_API\_KEY="your\_api\_key"
-
-
-
-향후 개선 방향
-
-\-파일 저장소 분리
-
-\-비동기 작업 큐 도입
-
-\-사용자 인증 기능 추가
-
-\-Docker Compose 기반 통합 실행
-
-\-배포 자동화
-
-\-예외 처리 및 재시도 정책 강화
-
-
-
-프로젝트 목적
-
-\-이 프로젝트는 음성 파일 처리, 비동기 작업 흐름, 외부 AI/STT 연동, 그리고 프론트엔드-백엔드-Python 서버 간 연계를 학습하고 구현하기 위한 사이드 프로젝트입니다.
+├─ stt-server/
+├─ docker-compose.yml
+└─ README.md
+
+개선 예정
+Redis 기반 Job Store
+WebSocket 기반 실시간 progress
+AWS 배포 (ECS / ALB)
+파일 저장소 분리 (S3)
+인증 기능 추가
+
+
+핵심 학습 포인트
+Docker 컨테이너 간 네트워크 이해
+비동기 작업 처리 구조 설계
+대용량 파일 처리 전략 (chunking)
+서비스 간 통신 설계
+실시간 진행률 처리
 
