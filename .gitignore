@@ -25,3 +25,8 @@ target/
 frontend/.env
 stt-server/.env
 backend/src/main/resources/application-local.properties
+
+# archives
+*.zip
+*.tar
+*.gz
