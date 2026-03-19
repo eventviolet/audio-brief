@@ -2,25 +2,26 @@
 .DS_Store
 Thumbs.db
 
+# IDE
+.idea/
+.vscode/
+
 # Node
 node_modules/
 dist/
 .env
 
-# Python (stt-server)
+# Python
 __pycache__/
 *.pyc
 venv/
+.env
 
-# Java (backend)
+# Java
 target/
 *.log
 
-# IDE
-.idea/
-.vscode/
-
-.env
-backend/src/main/resources/application-local.properties
+# local secret files
 frontend/.env
 stt-server/.env
+backend/src/main/resources/application-local.properties

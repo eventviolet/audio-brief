@@ -1,8 +1,6 @@
-\# Audio Brief
+제작자 이메일 : canon9035@gmail.com
 
-
-
-음성 파일을 업로드하면 STT(Speech-to-Text) 처리 후 요약 결과를 제공하는 프로젝트입니다.
+프로그램 설명 : 음성 파일을 업로드하면 STT(Speech-to-Text) 처리 후 요약 결과를 제공하는 프로젝트입니다.
 
 
 
