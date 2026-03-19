@@ -6,12 +6,7 @@ STT(Speech-to-Text) → 텍스트 변환 → 요약까지 자동으로 처리하
 
 
 ## 🧩 아키텍처
-[Frontend (React)]
-↓
-[Backend (Spring Boot)]
-↓
-[STT Server (FastAPI + Whisper)]
-
+[Frontend (React)] → [Backend (Spring Boot)]  → [STT Server (FastAPI + Whisper)]
 
 ### 통신 흐름
 
