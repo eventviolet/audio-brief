@@ -28,6 +28,7 @@ public class JobService {
 
     @Async
     public void processJob(String jobId, String originalFilename, byte[] fileBytes) {
+        System.out.println("NEW BYTE[] VERSION RUNNING");
         TranscriptionJob job = jobStore.get(jobId);
 
         if (job == null) {
