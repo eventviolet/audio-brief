@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class JobService {
     }
 
     @Async
-    public void processJob(String jobId, MultipartFile file) {
+    public void processJob(String jobId, String originalFilename, byte[] fileBytes) {
         TranscriptionJob job = jobStore.get(jobId);
 
         if (job == null) {
@@ -46,10 +45,10 @@ public class JobService {
 
             RestTemplate restTemplate = new RestTemplate(factory);
 
-            ByteArrayResource fileResource = new ByteArrayResource(file.getBytes()) {
+            ByteArrayResource fileResource = new ByteArrayResource(fileBytes) {
                 @Override
                 public String getFilename() {
-                    return file.getOriginalFilename();
+                    return originalFilename;
                 }
             };
 

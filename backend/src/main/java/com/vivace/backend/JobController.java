@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,18 +22,21 @@ public class JobController {
     }
 
     @PostMapping
-    public Map<String, Object> createJob(@RequestParam("file") MultipartFile file) {
+    public Map<String, Object> createJob(@RequestParam("file") MultipartFile file) throws IOException {
         String jobId = UUID.randomUUID().toString();
+        String originalFilename = file.getOriginalFilename();
+        byte[] fileBytes = file.getBytes();
 
         TranscriptionJob job = new TranscriptionJob(
                 jobId,
-                file.getOriginalFilename(),
+                originalFilename,
                 "QUEUED",
                 0
         );
 
         jobStore.save(job);
-        jobService.processJob(jobId, file);
+
+        jobService.processJob(jobId, originalFilename, fileBytes);
 
         return Map.of(
                 "jobId", jobId,
@@ -72,5 +76,4 @@ public class JobController {
         jobStore.save(job);
         return ResponseEntity.ok().build();
     }
-
 }
