@@ -12,8 +12,8 @@ app = FastAPI()
 CHUNK_SECONDS = 300
 
 # Spring 백엔드 주소
-SPRING_BASE_URL = "http://backend:8080"
-
+#SPRING_BASE_URL = "http://backend:8080"
+SPRING_BASE_URL = os.getenv("SPRING_BASE_URL", "http://localhost:8080")
 @app.get("/health")
 def health():
     return {"status": "ok"}

@@ -3,7 +3,7 @@
 // useRef: DOM(input 같은 것)를 직접 가리킬 때 사용
 // useMemo: 어떤 값을 필요할 때만 다시 계산
 import { useMemo, useRef, useState } from 'react'
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function App() {
   // 사용자가 선택한 파일을 저장합니다.
   const [file, setFile] = useState(null)
@@ -138,7 +138,7 @@ function App() {
 
     try {
       // 백엔드에 파일을 업로드합니다.
-      const res = await fetch('http://localhost:8080/api/jobs', {
+      const res = await fetch('${API_BASE_URL}/api/jobs', {
         method: 'POST',
         body: formData,
       })
@@ -186,7 +186,7 @@ function App() {
     const intervalId = setInterval(async () => {
       try {
         // jobId로 현재 작업 상태를 조회합니다.
-        const res = await fetch(`http://localhost:8080/api/jobs/${createdJobId}`)
+        const res = await fetch(`${API_BASE_URL}/api/jobs/${createdJobId}`)
 
         // 응답 본문을 text로 받습니다.
         const text = await res.text()
@@ -251,7 +251,7 @@ function App() {
 
     try {
       // 백엔드에 txt 파일 생성을 요청합니다.
-      const response = await fetch('http://localhost:8080/api/download/txt', {
+      const response = await fetch('${API_BASE_URL}/api/download/txt', {
         method: 'POST',
         headers: {
           // JSON 형식으로 보낸다는 의미입니다.

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/jobs")
 public class JobController {
 
